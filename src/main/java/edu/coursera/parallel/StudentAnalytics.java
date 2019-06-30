@@ -116,8 +116,7 @@ public final class StudentAnalytics {
      * @param studentArray Student data for the class.
      * @return Number of failed grades from students older than 20 years old.
      */
-    public int countNumberOfFailedStudentsOlderThan20Imperative(
-            final Student[] studentArray) {
+    public int countNumberOfFailedStudentsOlderThan20Imperative(final Student[] studentArray) {
         int count = 0;
         for (Student s : studentArray) {
             if (!s.checkIsCurrent() && s.getAge() > 20 && s.getGrade() < 65) {
@@ -138,8 +137,9 @@ public final class StudentAnalytics {
      * @param studentArray Student data for the class.
      * @return Number of failed grades from students older than 20 years old.
      */
-    public int countNumberOfFailedStudentsOlderThan20ParallelStream(
-            final Student[] studentArray) {
-        throw new UnsupportedOperationException();
+    public int countNumberOfFailedStudentsOlderThan20ParallelStream(final Student[] studentArray) {
+        return (int)Stream.of(studentArray).parallel()
+                .filter(student -> !student.checkIsCurrent() && student.getAge() > 20 && student.getGrade() < 65)
+                .count();
     }
 }
