@@ -1,6 +1,7 @@
 package edu.coursera.parallel;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -55,8 +56,7 @@ public final class StudentAnalytics {
      * @param studentArray Student data for the class.
      * @return Most common first name of inactive students
      */
-    public String mostCommonFirstNameOfInactiveStudentsImperative(
-            final Student[] studentArray) {
+    public String mostCommonFirstNameOfInactiveStudentsImperative(final Student[] studentArray) {
         List<Student> inactiveStudents = new ArrayList<Student>();
 
         for (Student s : studentArray) {
@@ -97,9 +97,14 @@ public final class StudentAnalytics {
      * @param studentArray Student data for the class.
      * @return Most common first name of inactive students
      */
-    public String mostCommonFirstNameOfInactiveStudentsParallelStream(
-            final Student[] studentArray) {
-        throw new UnsupportedOperationException();
+    public String mostCommonFirstNameOfInactiveStudentsParallelStream(final Student[] studentArray) {
+        return Stream.of(studentArray).parallel()
+                .filter(s -> !s.checkIsCurrent())
+                .collect(Collectors.groupingBy(Student::getFirstName, Collectors.counting()))
+                .entrySet()
+                .parallelStream()
+                .max(Map.Entry.comparingByValue())
+                .map(Map.Entry::getKey).orElse("");
     }
 
     /**
